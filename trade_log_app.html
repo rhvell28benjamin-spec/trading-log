@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Trade Log">
+    <meta name="theme-color" content="#2563eb">
+    
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' style='stop-color:%232563eb'/%3E%3Cstop offset='1' style='stop-color:%231e40af'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='180' height='180' fill='url(%23g)' rx='40'/%3E%3Crect x='40' y='50' width='100' height='80' rx='8' fill='white' opacity='0.9'/%3E%3Crect x='50' y='70' width='15' height='40' fill='%232563eb'/%3E%3Crect x='72' y='60' width='15' height='50' fill='%2310b981'/%3E%3Crect x='94' y='80' width='15' height='30' fill='%23ef4444'/%3E%3Crect x='116' y='65' width='15' height='45' fill='%23f59e0b'/%3E%3C/svg%3E">
+    
+    <title>Trade Log</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-size: 1.3em;
+            color: #2d3748;
+            margin: 0;
+            flex: 1;
+        }
+        
+        .stats-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .container {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-width: 500px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .question {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2d3748;
+            text-align: center;
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+        
+        .info-text {
+            font-size: 1em;
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+            font-size: 1em;
+        }
+        
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 600;
+            text-align: center;
+            background: white;
+        }
+        
+        .input-group input {
+            text-transform: uppercase;
+        }
+        
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 18px 25px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+        }
+        
+        .btn:active {
+            transform: scale(0.97);
+        }
+        
+        .btn-red {
+            background: linear-gradient(135deg, #fc8181 0%, #f56565 100%);
+            color: white;
+        }
+        
+        .btn-green {
+            background: linear-gradient(135deg, #68d391 0%, #48bb78 100%);
+            color: white;
+        }
+        
+        .btn-gray {
+            background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%);
+            color: #2d3748;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            color: white;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+        
+        .success-badge {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            font-size: 0.75em;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .back-btn {
+            margin-top: 20px;
+            background: #e2e8f0;
+            color: #2d3748;
+            padding: 12px;
+            font-size: 0.95em;
+        }
+        
+        .icon {
+            font-size: 1.4em;
+        }
+        
+        .progress-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #cbd5e0;
+        }
+        
+        .dot.active {
+            background: #2563eb;
+        }
+        
+        .step-label {
+            text-align: center;
+            font-size: 0.9em;
+            color: #718096;
+            margin-bottom: 15px;
+        }
+        
+        .trade-summary {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border-left: 5px solid #2563eb;
+        }
+        
+        .trade-summary-item {
+            margin: 10px 0;
+            font-size: 1em;
+        }
+        
+        .trade-summary-item strong {
+            color: #2d3748;
+        }
+        
+        .saved-message {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #10b981;
+            margin: 15px 0;
+            font-weight: 600;
+            text-align: center;
+            color: #065f46;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 450px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            margin: 20px;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2d3748;
+        }
+        
+        .close-btn {
+            background: #e2e8f0;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            font-size: 1.2em;
+            cursor: pointer;
+            color: #2d3748;
+        }
+        
+        .stat-card {
+            background: #f7fafc;
+            padding: 15px;
+            border-radius: 12px;
+            margin: 10px 0;
+            border-left: 4px solid #2563eb;
+        }
+        
+        .stat-title {
+            font-size: 0.9em;
+            color: #718096;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2d3748;
+        }
+        
+        .scenario-breakdown {
+            margin-top: 20px;
+        }
+        
+        .scenario-item {
+            background: white;
+            border: 2px solid #e2e8f0;
+            padding: 15px;
+            border-radius: 12px;
+            margin: 10px 0;
+        }
+        
+        .scenario-name {
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+        
+        .scenario-stats {
+            font-size: 0.9em;
+            color: #4a5568;
+        }
+        
+        .trade-history {
+            margin-top: 20px;
+        }
+        
+        .history-item {
+            background: white;
+            border: 2px solid #e2e8f0;
+            padding: 12px;
+            border-radius: 10px;
+            margin: 8px 0;
+            font-size: 0.9em;
+        }
+        
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .history-details {
+            color: #718096;
+            font-size: 0.85em;
+        }
+        
+        .win {
+            color: #10b981;
+        }
+        
+        .loss {
+            color: #ef4444;
+        }
+        
+        .clear-data-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div></div>
+        <h1>📊 Trade Log</h1>
+        <button class="stats-btn" onclick="showStats()">Stats</button>
+    </div>
+    
+    <div class="container">
+        <div class="card" id="screen"></div>
+    </div>
+    
+    <div class="modal" id="statsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">📈 Your Stats</div>
+                <button class="close-btn" onclick="closeStats()">×</button>
+            </div>
+            <div id="statsContent"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentPath = [];
+        let currentTrade = {
+            stock: '',
+            time: '',
+            scenario: '',
+            scenarioName: '',
+            successRate: '',
+            worked: null,
+            date: null
+        };
+        
+        const screens = {
+            start: {
+                dots: 0,
+                step: "New Trade",
+                question: "Enter Stock Ticker",
+                isInput: true
+            },
+            
+            timeSelect: {
+                dots: 0,
+                step: "New Trade",
+                question: "What time did you trade?",
+                isTimeSelect: true
+            },
+            
+            firstCandle: {
+                dots: 1,
+                step: "Step 1 of 3",
+                question: "What's the NEXT candle after the doji?",
+                options: [
+                    { text: "Red Candle", icon: "🔴", color: "red", action: "redPath" },
+                    { text: "Green Candle", icon: "🟢", color: "green", action: "greenPath" },
+                    { text: "Another Doji", icon: "⚪", color: "gray", action: "anotherDoji" }
+                ]
+            },
+            
+            anotherDoji: {
+                dots: 1,
+                step: "Waiting...",
+                question: "Keep waiting through dojis",
+                info: "Wait for the next candle that is either RED or GREEN",
+                options: [
+                    { text: "Now it's Red", icon: "🔴", color: "red", action: "redPath" },
+                    { text: "Now it's Green", icon: "🟢", color: "green", action: "greenPath" }
+                ]
+            },
+            
+            redPath: {
+                dots: 2,
+                step: "Step 2 of 3",
+                question: "Where is the 2nd lower low?",
+                info: "Find 1st low (red + green combo), then find 2nd lower low",
+                options: [
+                    { text: "Stays in middle area", icon: "✓", color: "red", action: "redMiddle", badge: "LIKELY" },
+                    { text: "Below original move's low", icon: "✗", color: "red", action: "redBelow", badge: "50/50" }
+                ]
+            },
+            
+            greenPath: {
+                dots: 2,
+                step: "Step 2 of 3",
+                question: "Where was the doji positioned?",
+                info: "Was the doji near the top or in the middle?",
+                options: [
+                    { text: "Near top of move", icon: "📍", color: "green", action: "greenTop", badge: "70%" },
+                    { text: "Middle (flag pattern)", icon: "🚩", color: "green", action: "greenMiddle", badge: "80%" }
+                ]
+            },
+            
+            redMiddle: {
+                dots: 3,
+                step: "Step 3 of 3",
+                question: "Did this trade work?",
+                scenario: "1",
+                scenarioName: "Red → Stays in Middle",
+                successRate: "LIKELY",
+                isOutcome: true
+            },
+            
+            redBelow: {
+                dots: 3,
+                step: "Step 3 of 3",
+                question: "Did this trade work?",
+                scenario: "2",
+                scenarioName: "Red → Below Original Low",
+                successRate: "50/50 UNLIKELY",
+                isOutcome: true
+            },
+            
+            greenTop: {
+                dots: 3,
+                step: "Step 3 of 3",
+                question: "Did this trade work?",
+                scenario: "3",
+                scenarioName: "Green → Doji Near Top",
+                successRate: "70% VERY LIKELY",
+                isOutcome: true
+            },
+            
+            greenMiddle: {
+                dots: 3,
+                step: "Step 3 of 3",
+                question: "Did this trade work?",
+                scenario: "4",
+                scenarioName: "Green → Doji in Middle",
+                successRate: "80% SHOULD WORK",
+                isOutcome: true
+            },
+            
+            saved: {
+                dots: 3,
+                step: "Complete",
+                question: "Trade Logged! ✅",
+                isSaved: true
+            }
+        };
+        
+        function showScreen(screenName) {
+            currentPath.push(screenName);
+            const screen = screens[screenName];
+            const container = document.getElementById('screen');
+            
+            let html = '';
+            
+            if (screen.dots > 0) {
+                html += '<div class="progress-dots">';
+                for (let i = 0; i < 3; i++) {
+                    html += `<div class="dot ${i < screen.dots ? 'active' : ''}"></div>`;
+                }
+                html += '</div>';
+            }
+            
+            html += `<div class="step-label">${screen.step}</div>`;
+            html += `<div class="question">${screen.question}</div>`;
+            
+            if (screen.info) {
+                html += `<div class="info-text">${screen.info.replace(/\n/g, '<br>')}</div>`;
+            }
+            
+            if (screen.isInput) {
+                html += `
+                    <div class="input-group">
+                        <label>Stock Symbol</label>
+                        <input type="text" id="stockInput" placeholder="e.g., TSLA" maxlength="10" />
+                    </div>
+                    <button class="btn btn-primary" onclick="submitStock()">
+                        <span class="icon">→</span>
+                        <span>Continue</span>
+                    </button>
+                `;
+            }
+            else if (screen.isTimeSelect) {
+                html += `
+                    <div class="input-group">
+                        <label>Trading Time</label>
+                        <select id="timeSelect">
+                            <option value="">Select time...</option>
+                            ${generateTimeOptions()}
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="submitTime()">
+                        <span class="icon">→</span>
+                        <span>Continue</span>
+                    </button>
+                `;
+            }
+            else if (screen.isOutcome) {
+                currentTrade.scenario = screen.scenario;
+                currentTrade.scenarioName = screen.scenarioName;
+                currentTrade.successRate = screen.successRate;
+                
+                html += `
+                    <div class="trade-summary">
+                        <div class="trade-summary-item"><strong>Stock:</strong> ${currentTrade.stock}</div>
+                        <div class="trade-summary-item"><strong>Time:</strong> ${currentTrade.time}</div>
+                        <div class="trade-summary-item"><strong>Scenario ${screen.scenario}:</strong> ${screen.scenarioName}</div>
+                        <div class="trade-summary-item"><strong>Expected:</strong> ${screen.successRate}</div>
+                    </div>
+                    <div class="options">
+                        <button class="btn btn-success" onclick="submitOutcome(true)">
+                            <span class="icon">✓</span>
+                            <span>Yes, It Worked</span>
+                        </button>
+                        <button class="btn btn-danger" onclick="submitOutcome(false)">
+                            <span class="icon">✗</span>
+                            <span>No, It Failed</span>
+                        </button>
+                    </div>
+                `;
+            }
+            else if (screen.isSaved) {
+                html += `
+                    <div class="saved-message">
+                        Trade saved successfully! 🎉
+                    </div>
+                    <div class="trade-summary">
+                        <div class="trade-summary-item"><strong>Stock:</strong> ${currentTrade.stock}</div>
+                        <div class="trade-summary-item"><strong>Time:</strong> ${currentTrade.time}</div>
+                        <div class="trade-summary-item"><strong>Scenario:</strong> ${currentTrade.scenarioName}</div>
+                        <div class="trade-summary-item"><strong>Result:</strong> ${currentTrade.worked ? '✓ Worked' : '✗ Failed'}</div>
+                        <div class="trade-summary-item"><strong>Date:</strong> ${currentTrade.date}</div>
+                    </div>
+                    <button class="btn btn-primary" onclick="reset()">Log Another Trade</button>
+                    <button class="btn btn-primary" style="margin-top: 10px;" onclick="showStats()">View Stats</button>
+                `;
+            }
+            else {
+                html += '<div class="options">';
+                screen.options.forEach(option => {
+                    const colorClass = option.color ? `btn-${option.color}` : 'btn-primary';
+                    const badge = option.badge ? `<span class="success-badge">${option.badge}</span>` : '';
+                    html += `
+                        <button class="btn ${colorClass}" onclick="showScreen('${option.action}')">
+                            <span class="icon">${option.icon}</span>
+                            <span>${option.text}</span>
+                            ${badge}
+                        </button>
+                    `;
+                });
+                html += '</div>';
+            }
+            
+            if (currentPath.length > 1 && !screen.isSaved) {
+                html += '<button class="btn back-btn" onclick="goBack()">← Back</button>';
+            }
+            
+            container.innerHTML = html;
+            
+            if (screen.isInput) {
+                setTimeout(() => {
+                    document.getElementById('stockInput').focus();
+                }, 100);
+            }
+        }
+        
+        function submitStock() {
+            const input = document.getElementById('stockInput').value.trim().toUpperCase();
+            if (input) {
+                currentTrade.stock = input;
+                showScreen('timeSelect');
+            } else {
+                alert('Please enter a stock ticker');
+            }
+        }
+        
+        function generateTimeOptions() {
+            let options = '';
+            for (let hour = 0; hour < 24; hour++) {
+                for (let minute of [0, 30]) {
+                    let displayHour = hour;
+                    let period = 'AM';
+                    
+                    if (hour === 0) {
+                        displayHour = 12;
+                    } else if (hour === 12) {
+                        displayHour = 12;
+                        period = 'PM';
+                    } else if (hour > 12) {
+                        displayHour = hour - 12;
+                        period = 'PM';
+                    }
+                    
+                    const timeStr = `${displayHour}:${minute.toString().padStart(2, '0')} ${period}`;
+                    options += `<option value="${timeStr}">${timeStr}</option>`;
+                }
+            }
+            return options;
+        }
+        
+        function submitTime() {
+            const select = document.getElementById('timeSelect');
+            const time = select.value;
+            if (time) {
+                currentTrade.time = time;
+                showScreen('firstCandle');
+            } else {
+                alert('Please select a time');
+            }
+        }
+        
+        function submitOutcome(worked) {
+            currentTrade.worked = worked;
+            currentTrade.date = new Date().toLocaleString();
+            saveTrade();
+            showScreen('saved');
+        }
+        
+        function saveTrade() {
+            let trades = JSON.parse(localStorage.getItem('dojiTrades') || '[]');
+            trades.push(currentTrade);
+            localStorage.setItem('dojiTrades', JSON.stringify(trades));
+        }
+        
+        function goBack() {
+            currentPath.pop();
+            const previous = currentPath.pop();
+            showScreen(previous || 'start');
+        }
+        
+        function reset() {
+            currentPath = [];
+            currentTrade = {
+                stock: '',
+                time: '',
+                scenario: '',
+                scenarioName: '',
+                successRate: '',
+                worked: null,
+                date: null
+            };
+            showScreen('start');
+        }
+        
+        function showStats() {
+            const trades = JSON.parse(localStorage.getItem('dojiTrades') || '[]');
+            const modal = document.getElementById('statsModal');
+            const content = document.getElementById('statsContent');
+            
+            if (trades.length === 0) {
+                content.innerHTML = '<div style="text-align: center; color: #718096; padding: 20px;">No trades logged yet. Start tracking your trades!</div>';
+            } else {
+                const totalTrades = trades.length;
+                const wins = trades.filter(t => t.worked).length;
+                const losses = totalTrades - wins;
+                const winRate = ((wins / totalTrades) * 100).toFixed(1);
+                
+                const scenarios = {
+                    '1': { name: 'Red → Stays in Middle', trades: [], wins: 0 },
+                    '2': { name: 'Red → Below Original', trades: [], wins: 0 },
+                    '3': { name: 'Green → Near Top', trades: [], wins: 0 },
+                    '4': { name: 'Green → Middle Flag', trades: [], wins: 0 }
+                };
+                
+                trades.forEach(trade => {
+                    if (scenarios[trade.scenario]) {
+                        scenarios[trade.scenario].trades.push(trade);
+                        if (trade.worked) scenarios[trade.scenario].wins++;
+                    }
+                });
+                
+                let html = `
+                    <div class="stat-card">
+                        <div class="stat-title">Total Trades</div>
+                        <div class="stat-value">${totalTrades}</div>
+                    </div>
+                    <div class="stat-card" style="border-color: #10b981;">
+                        <div class="stat-title">Win Rate</div>
+                        <div class="stat-value" style="color: #10b981;">${winRate}%</div>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <div class="stat-card" style="flex: 1; border-color: #10b981;">
+                            <div class="stat-title">Wins</div>
+                            <div class="stat-value" style="color: #10b981;">${wins}</div>
+                        </div>
+                        <div class="stat-card" style="flex: 1; border-color: #ef4444;">
+                            <div class="stat-title">Losses</div>
+                            <div class="stat-value" style="color: #ef4444;">${losses}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="scenario-breakdown">
+                        <h3 style="margin-bottom: 15px; color: #2d3748;">By Scenario</h3>
+                `;
+                
+                Object.keys(scenarios).forEach(key => {
+                    const s = scenarios[key];
+                    if (s.trades.length > 0) {
+                        const rate = ((s.wins / s.trades.length) * 100).toFixed(1);
+                        html += `
+                            <div class="scenario-item">
+                                <div class="scenario-name">Scenario ${key}: ${s.name}</div>
+                                <div class="scenario-stats">
+                                    ${s.trades.length} trades • ${s.wins} wins • ${rate}% win rate
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+                
+                html += `</div>
+                    
+                    <div class="trade-history">
+                        <h3 style="margin-bottom: 15px; color: #2d3748;">Recent Trades</h3>
+                `;
+                
+                const recentTrades = trades.slice(-10).reverse();
+                recentTrades.forEach(trade => {
+                    const resultClass = trade.worked ? 'win' : 'loss';
+                    const resultText = trade.worked ? '✓ Win' : '✗ Loss';
+                    html += `
+                        <div class="history-item">
+                            <div class="history-header">
+                                <span>${trade.stock} @ ${trade.time || 'N/A'}</span>
+                                <span class="${resultClass}">${resultText}</span>
+                            </div>
+                            <div class="history-details">
+                                Scenario ${trade.scenario} • ${trade.date}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += `
+                    </div>
+                    <button class="clear-data-btn" onclick="clearAllData()">Clear All Data</button>
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <button class="btn btn-primary" style="flex: 1; margin: 0;" onclick="exportData()">📤 Export</button>
+                        <button class="btn btn-primary" style="flex: 1; margin: 0;" onclick="document.getElementById('importFile').click()">📥 Import</button>
+                    </div>
+                    <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
+                `;
+                
+                content.innerHTML = html;
+            }
+            
+            modal.classList.add('active');
+        }
+        
+        function closeStats() {
+            document.getElementById('statsModal').classList.remove('active');
+        }
+        
+        function clearAllData() {
+            if (confirm('Are you sure you want to delete all trade data? This cannot be undone.')) {
+                localStorage.removeItem('dojiTrades');
+                closeStats();
+                alert('All data cleared!');
+            }
+        }
+        
+        function exportData() {
+            const trades = JSON.parse(localStorage.getItem('dojiTrades') || '[]');
+            
+            if (trades.length === 0) {
+                alert('No data to export!');
+                return;
+            }
+            
+            const dataStr = JSON.stringify(trades, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `doji-trades-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            alert('Data exported! Check your Downloads folder.');
+        }
+        
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedTrades = JSON.parse(e.target.result);
+                    
+                    if (!Array.isArray(importedTrades)) {
+                        alert('Invalid file format!');
+                        return;
+                    }
+                    
+                    const existingTrades = JSON.parse(localStorage.getItem('dojiTrades') || '[]');
+                    const mergedTrades = [...existingTrades, ...importedTrades];
+                    
+                    localStorage.setItem('dojiTrades', JSON.stringify(mergedTrades));
+                    
+                    alert(`Successfully imported ${importedTrades.length} trades!`);
+                    closeStats();
+                    showStats();
+                } catch (error) {
+                    alert('Error reading file. Please make sure it\'s a valid trade data file.');
+                }
+            };
+            reader.readAsText(file);
+        }
+        
+        showScreen('start');
+    </script>
+</body>
+</html>
